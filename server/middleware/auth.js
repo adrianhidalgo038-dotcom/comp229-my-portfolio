@@ -1,18 +1,24 @@
 import jwt from "jsonwebtoken";
 
-const JWT_SECRET = process.env.JWT_SECRET || "dev_secret_change_me";
-
-export const auth = (req, res, next) => {
-  const header = req.header("Authorization");
-  if (!header?.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "No token provided" });
-  }
-  const token = header.replace("Bearer ", "");
+export const protect = (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET);
-    req.user = decoded; // { id, email }
+    const token = req.cookies.token;
+
+    if (!token) return res.status(401).json({ message: "Not authorized" });
+
+    const decoded = jwt.verify(token, "SECRET123");
+
+    req.user = decoded;
     next();
-  } catch {
-    return res.status(401).json({ message: "Invalid token" });
+
+  } catch (error) {
+    res.status(401).json({ message: "Invalid token" });
   }
+};
+
+export const adminOnly = (req, res, next) => {
+  if (req.user.role !== "Admin")
+    return res.status(403).json({ message: "Admin only access" });
+
+  next();
 };

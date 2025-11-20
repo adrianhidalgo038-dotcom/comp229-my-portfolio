@@ -12,19 +12,24 @@ import helmet from "helmet";
 const app = express();
 
 app.use(cors({
-  origin: "http://localhost:5173"
+  origin: "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"]
 }));
 
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(compress());
+app.use(helmet());
+
+// API routes
 app.use("/api/contacts", contactRoutes);
 app.use("/api/projects", projectRoutes);
 app.use("/api/qualifications", qualificationRoutes);
 app.use("/api/users", userRoutes);
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser());
-app.use(compress());
-app.use(helmet());
-app.use(cors());
+
 export default app;

@@ -8,7 +8,21 @@ connectDB();
 
 import app from "./server/express.js";
 import router from "./server/assets-router.js";
-//const assetsRouter = require("./server/assets-router");
+import cookieParser from "cookie-parser";
+import authRoutes from "./server/routes/authRoutes.js";
+import userRoutes from "./server/routes/userRoutes.js";
+import cors from "cors";
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
+
+app.use(cookieParser());
+app.use("/auth", authRoutes);
+app.use("/users", userRoutes);
 app.use("/src", router);
 app.use("/", function (req, res) {
   res.send("Welcome to User application");

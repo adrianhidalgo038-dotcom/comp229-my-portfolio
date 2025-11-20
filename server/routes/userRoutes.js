@@ -3,7 +3,7 @@ import {
   getUsers, getUserById, createUser, updateUser, deleteUser, deleteAllUsers,
   login, logout, me
 } from "../controllers/userController.js";
-import { auth } from "../middleware/auth.js";
+import { protect, adminOnly } from "../middleware/auth.js";
 import mongoose from "mongoose";
 
 const router = express.Router();
@@ -25,7 +25,7 @@ router.delete("/", deleteAllUsers);
 
 // Auth
 router.post("/login", login);
-router.post("/logout", auth, logout);
-router.get("/me", auth, me);
+router.post("/logout", protect, logout);
+router.get("/me", protect, me);
 
 export default router;
